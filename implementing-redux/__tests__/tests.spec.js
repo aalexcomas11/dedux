@@ -25,7 +25,7 @@ describe('dedux', () => {
 
     describe('dispatch', () => {
       it('takes an action that conforms to { type: string, ...any }', () => {
-        const store = createStore(() => {})
+        const store = createStore(() => { })
 
         expect(() => {
           store.dispatch({ randomKey: 'randomValue' })
@@ -38,7 +38,14 @@ describe('dedux', () => {
 
       it(`dispatch should take any dispatched action and run it 
           through the reducer function to produce a new state.`, () => {
-        const reducer = () => {} // Your reducer function here!
+        const reducer = (state = { foo: 'bar' }, action) => {
+          switch (action.type) {
+            case 'BAZIFY':
+              return { ...state, foo: 'baz' }
+            default:
+              return state
+          }
+        }
 
         const store = createStore(reducer)
 
@@ -97,7 +104,14 @@ describe('dedux', () => {
       })
     })
   })
-
+  /**
+   * Not sure about this one. the middleware function takes in an array of functions
+   * that look like this store => dispatch => action according to https://redux.js.org/api/applymiddleware
+   * 
+   * Line 130 seems to be passing in the store as the first argument and the array of middlewares with 
+   * store aleady called, meaning that the functions now look like this dispatch => action, I can add
+   * an override when my arguments look like line 130, but not sure if that's what we're looking for
+   */
   describe.skip('applyMiddleware', () => {
     // Don't start this until you've completed part 2 of the challenge
     it('can apply middleware to dispatched actions', () => {
